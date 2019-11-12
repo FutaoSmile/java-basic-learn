@@ -3,10 +3,7 @@ package com.futao.learn.thread.创建;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -29,9 +26,7 @@ public class _4ThreadPool {
                 10L,
                 TimeUnit.SECONDS,
                 new LinkedBlockingDeque<>(1024),
-                (r) -> {
-                    return new Thread("tp-" + atomicInteger.getAndIncrement());
-                }
+                (r) -> new Thread(r, "tp-" + atomicInteger.getAndIncrement())
         );
         //预加载所有核心线程
         threadPool.prestartAllCoreThreads();
@@ -47,14 +42,15 @@ public class _4ThreadPool {
         });
 
 
-//        Future<String> submitResult = threadPool.submit(() -> {
-//            log.info("{}", "submit()方法执行任务start");
-//            TimeUnit.SECONDS.sleep(2);
-//            log.info("{}", "submit()方法执行任务end");
-//            return "submit返回值";
-//        });
-//        log.info("{}", submitResult.get());
-//        threadPool.shutdown();
-        System.in.read();
+        Future<String> submitResult = threadPool.submit(() -> {
+            log.info("{}", "submit()方法执行任务start");
+            TimeUnit.SECONDS.sleep(2);
+            log.info("{}", "submit()方法执行任务end");
+            return "submit返回值";
+        });
+        log.info("{}", submitResult.get());
+        threadPool.shutdown();
+
+//        System.in.read();
     }
 }
