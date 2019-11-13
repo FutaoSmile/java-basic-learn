@@ -8,7 +8,7 @@
     <property name="LOG_PATH" value="logback-logs/reflect"/>
     <!--或者在spring配置文件中设置logging.path-->
 
-    <conversionRule conversionWord="msg" converterClass="com.futao.basic.learn.reflect.other.LogBackToStringLayout"/>
+    <conversionRule conversionWord="msg" converterClass="com.lazy.tools.log.LogBackToStringLayout"/>
 
     <!--输出到控制台-->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

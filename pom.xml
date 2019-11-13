@@ -12,6 +12,7 @@
     <modules>
         <module>multi-thread</module>
         <module>reflect</module>
+        <module>i18n</module>
     </modules>
 
 
@@ -25,6 +26,11 @@
 
 
     <dependencies>
+        <dependency>
+            <groupId>com.lazy.starter</groupId>
+            <artifactId>lazy-tools</artifactId>
+            <version>1.2.3</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
