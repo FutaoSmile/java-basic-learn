@@ -1,4 +1,4 @@
-package com.futao.learn.thread._3常用方法;
+package com.futao.basic.learn.thread._3常用方法;
 
 import lombok.extern.slf4j.Slf4j;
 

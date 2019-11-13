@@ -1,4 +1,4 @@
-package com.futao.learn.thread._2JDK的线程池;
+package com.futao.basic.learn.thread._2JDK的线程池;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
