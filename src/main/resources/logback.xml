@@ -5,7 +5,7 @@
     <!--    <include resource="org/springframework/boot/logging/logback/base.xml"/>-->
 
     <!--定义变量-->
-    <property name="LOG_PATH" value="logback-logs"/>
+    <property name="LOG_PATH" value="logback-logs/thread"/>
     <!--或者在spring配置文件中设置logging.path-->
 
     <!--    <conversionRule conversionWord="msg" converterClass="com.lazy.tools.log.LogBackToStringLayout"/>-->
