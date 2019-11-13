@@ -1,13 +1,14 @@
 package com.futao.learn.thread._2JDK的线程池;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
+ * 固定线程数量的线程池
+ * coreSize=maxSize且任务阻塞队列长度为整形的最大值Integer.MAX_VALUE
+ *
  * @author dark
  * Created on 2019/11/12.
  */
@@ -40,7 +41,6 @@ public class _1Fixed {
         _0TestClass.test(fixedThreadPool);
 
         fixedThreadPool.shutdown();
-
 
 
         log.info("主线程");

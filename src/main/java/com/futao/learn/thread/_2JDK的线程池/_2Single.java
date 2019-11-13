@@ -3,6 +3,7 @@ package com.futao.learn.thread._2JDK的线程池;
 import java.util.concurrent.Executors;
 
 /**
+ * 单个线程的线程池
  * 可以保证线程的执行顺序
  *
  * @author dark
