@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
  * Created on 2019/11/14.
  */
 @Slf4j
-public class _1同步代码块_3匿名内部类 {
+public class _1同步代码块_3Lanmda {
 
     private static int ticket = 100;
     static final Object obj = new Object();

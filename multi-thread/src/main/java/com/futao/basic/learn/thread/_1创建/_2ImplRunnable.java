@@ -34,6 +34,13 @@ public class _2ImplRunnable implements Runnable {         //1.实现Runnable接�
                 log.info("匿名内部类的方式");
             }
         }).start();
+
+        new Thread() {
+            @Override
+            public void run() {
+                log.info("---");
+            }
+        }.start();
     }
 
 }
