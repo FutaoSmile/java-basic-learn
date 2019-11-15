@@ -1,4 +1,4 @@
-package com.futao.basic.learn.thread._4线程安全_线程同步;
+package com.futao.basic.learn.thread._4线程安全_线程同步._1同步代码块同步方法;
 
 import lombok.extern.slf4j.Slf4j;
 
