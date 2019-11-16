@@ -12,4 +12,11 @@
     <artifactId>reflect</artifactId>
     <description>反射</description>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.lazy.starter</groupId>
+            <artifactId>lazy-tools</artifactId>
+        </dependency>
+    </dependencies>
+
 </project>

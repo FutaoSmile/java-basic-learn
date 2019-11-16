@@ -11,6 +11,11 @@
 
     <artifactId>i18n</artifactId>
     <description>国际化</description>
-
+    <dependencies>
+        <dependency>
+            <groupId>com.lazy.starter</groupId>
+            <artifactId>lazy-tools</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

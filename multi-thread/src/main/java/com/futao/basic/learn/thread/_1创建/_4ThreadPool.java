@@ -15,6 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class _4ThreadPool {
     public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+
+        TimeUnit.SECONDS.sleep(5L);
         //获取处理器数量
         int processors = Runtime.getRuntime().availableProcessors();
         //线程计数器
@@ -51,6 +53,6 @@ public class _4ThreadPool {
         log.info("{}", submitResult.get());
         threadPool.shutdown();
 
-//        System.in.read();
+        System.in.read();
     }
 }
