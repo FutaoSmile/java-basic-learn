@@ -1,4 +1,4 @@
-package com.futao.basic.learn.thread._1创建;
+package com.futao.basic.learn.thread._1_1创建;
 
 import lombok.extern.slf4j.Slf4j;
 
