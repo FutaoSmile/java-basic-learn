@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * 店员
+ * 注意：因为只有一家店，即只有一个Clerk实例，所以调用notify()和wait()方法的对象都是同一个，synchronized锁定的也是同一个对象
  *
  * @author futao
  * Created on 2019/11/15.

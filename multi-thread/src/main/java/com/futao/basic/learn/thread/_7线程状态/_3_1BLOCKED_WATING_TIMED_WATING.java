@@ -6,6 +6,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 演示线程状态 - BLOCKED，WAITING，TIMED_WAITING
+ * <p>
+ * WAITING有可能直接到BLOCKED状态，比如线程wait()后被唤醒，可能还不能获取到同步监视器，那么此时线程就处于BLOCKED状态，直到抢到同步监视器之后再转换到RUNNABLE状态
+ * 如果发生异常，可以直接从WAITING/TIMED_WAITING跳转到TERMINATED状态
  *
  * @author futao
  * Created on 2019/11/21.
