@@ -1,0 +1,1 @@
+* 为什么 `wait()`, `notify()`, `notifyAll()`定义在Object而不是Thread
