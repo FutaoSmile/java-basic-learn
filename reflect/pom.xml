@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>reflect</artifactId>
-    <description>反射</description>
+    <description>反射-尚学堂</description>
 
     <dependencies>
         <dependency>
