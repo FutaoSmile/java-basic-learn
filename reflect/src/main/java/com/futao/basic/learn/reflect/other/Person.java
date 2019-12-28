@@ -33,4 +33,11 @@ public class Person {
     private static final String m1() {
         return "方法被调用";
     }
+
+
+    public static void main(String[] args) {
+        String s = "1234567890";
+        System.out.println(s.substring(0, 4));
+        System.out.println(s.substring(s.length() - 2));
+    }
 }
