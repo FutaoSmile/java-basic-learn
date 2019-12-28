@@ -1,4 +1,4 @@
-package com.futao.basic.learn.spring.batch.flow;
+package com.futao.basic.learn.spring.batch.jobdemo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -12,19 +12,18 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 
 /**
- * FlowDemo
- * 一个Flow是由多个step构成
+ * 并发执行任务
  *
  * @author futao
  * @date 2019/12/28.
  */
-@Slf4j
 @EnableBatchProcessing
+@Slf4j
 @Configuration
-public class FlowDemo {
-
+public class A3_JobSplitDemo {
     /**
      * 创建Job所需
      */
@@ -37,6 +36,7 @@ public class FlowDemo {
     @Autowired
     private StepBuilderFactory stepBuilderFactory;
 
+
     /**
      * 定义Step-1
      *
@@ -47,7 +47,9 @@ public class FlowDemo {
         return stepBuilderFactory
                 .get("[作业步骤名称]-步骤-1-1")
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("[作业步骤名称]-步骤-1-task-1");
+                    log.debug("[作业步骤名称]-步骤-1-task-1");
+                    Thread.sleep(3000L);
+                    log.debug("step1 end");
                     return RepeatStatus.FINISHED;
                 }).build();
 
@@ -63,7 +65,9 @@ public class FlowDemo {
         return stepBuilderFactory
                 .get("[作业步骤名称]-步骤-2-1")
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("[作业步骤名称]-步骤-2-task-1");
+                    log.debug("[作业步骤名称]-步骤-2-task-1");
+                    Thread.sleep(2000L);
+                    log.debug("step2 end");
                     return RepeatStatus.FINISHED;
                 }).build();
 
@@ -79,51 +83,47 @@ public class FlowDemo {
         return stepBuilderFactory
                 .get("[作业步骤名称]-步骤-3-1")
                 .tasklet((contribution, chunkContext) -> {
-                    log.info("[作业步骤名称]-步骤-3-task-1");
+                    log.debug("[作业步骤名称]-步骤-3-task-1");
+                    Thread.sleep(1000L);
+                    log.debug("step3 end");
                     return RepeatStatus.FINISHED;
                 }).build();
     }
 
-    /**
-     * 创建一个flow对象
-     * 指明这个flow包含哪些flow
-     *
-     * @return
-     */
     @Bean
-    public Flow flowDemoFlow1() {
-        return new FlowBuilder<Flow>("flowDemoFlow-1-1")
-                //定义这个flow包含哪些step
+    public Flow workFlow1() {
+        return new FlowBuilder<Flow>("工作流1")
                 .start(step1())
                 .next(step2())
-                .next(step3())
                 .build();
+
     }
 
-    /**
-     * 创建一个flow对象
-     * 指明这个flow包含哪些flow
-     *
-     * @return
-     */
     @Bean
-    public Flow flowDemoFlow2() {
-        return new FlowBuilder<Flow>("flowDemoFlow-2-1")
-                //定义这个flow包含哪些step
+    public Flow workFlow2() {
+        return new FlowBuilder<Flow>("工作流2")
                 .start(step2())
                 .next(step3())
                 .build();
+
     }
 
-
+    /**
+     * 多线程处理flow，每个flow都是一个线程
+     *
+     * @return
+     */
     @Bean
-    public Job flowDemoJob() {
+    public Job jobSplitDemoJob() {
         return jobBuilderFactory
-                .get("[作业名称]-flowDemoJob-2-1")
-                .start(flowDemoFlow1())
-                .on("COMPLETED")
-                .to(flowDemoFlow2())
+                .get("[并发处理任务]")
+                .start(workFlow1())
+                .split(new SimpleAsyncTaskExecutor())
+                .add(workFlow2())
                 .end()
                 .build();
+
     }
+
+
 }
