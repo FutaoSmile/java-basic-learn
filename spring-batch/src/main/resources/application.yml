@@ -8,3 +8,5 @@ spring:
     platform: mysql
   batch:
     initialize-schema: always
+    job:
+      names: 父任务1
