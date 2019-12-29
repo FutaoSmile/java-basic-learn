@@ -9,4 +9,4 @@ spring:
   batch:
     initialize-schema: always
     job:
-      names: demoJob-1   # Comma-separated list of job names to execute on startup (for instance,`job1,job2`). By default, all Jobs found in the context are executed.
+      names: A7_ItemReaderDemo.jobDemo-1   # Comma-separated list of job names to execute on startup (for instance,`job1,job2`). By default, all Jobs found in the context are executed.

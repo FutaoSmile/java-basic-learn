@@ -77,7 +77,7 @@ public class A6_Listener {
     @Bean
     public Job demoJob1() {
         return jobBuilderFactory
-                .get("demoJob-1")
+                .get("A6_Listener.demoJob-1")
                 .start(
                         stepBuilderFactory.get("step-01")
                                 .listener(stepListener())
