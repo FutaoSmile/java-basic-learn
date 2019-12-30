@@ -9,6 +9,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
@@ -20,6 +21,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -34,14 +36,15 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 /**
- * 从<1.数据库中><2.File文件只中><3.XML文件>读取数据并处理
+ * 从<1.数据库中><2.File文件只中><3.XML文件><4.读取多个文件>读取数据并处理
+ * 写入数据
  *
  * @author futao
  * @date 2019/12/29.
  */
 @Slf4j
 @Configuration
-public class A8_ItemReaderDBDemo {
+public class A8_ItemReaderWriteDemo {
 
     /**
      * 创建Job所需
@@ -58,10 +61,18 @@ public class A8_ItemReaderDBDemo {
     @Autowired
     private DataSource dataSource;
 
+    @Qualifier("simpleItemWriter")
+    @Autowired
+    private ItemWriter<UserEntity> simpleItemWriter;
+
+    @Qualifier("jdbcItemWriter")
+    @Autowired
+    private ItemWriter<UserEntity> jdbcItemWriter;
+
     @Bean
     public Job ItemReaderDBJobDemo() {
         return jobBuilderFactory
-                .get("A8_ItemReaderDBDemo.jobDemo.02-12")
+                .get("A8_ItemReaderDBDemo.jobDemo.02-16")
                 .start(step1())
                 .next(step2())
                 .next(step3())
@@ -80,6 +91,7 @@ public class A8_ItemReaderDBDemo {
                     });
                     log.info("一个BD批次完成.....");
                 })
+                .writer(simpleItemWriter)
                 .build();
     }
 
@@ -123,6 +135,7 @@ public class A8_ItemReaderDBDemo {
                     });
                     log.info("一个多文件File批次完成.....");
                 })
+                .writer(jdbcItemWriter)
                 .build();
     }
 
