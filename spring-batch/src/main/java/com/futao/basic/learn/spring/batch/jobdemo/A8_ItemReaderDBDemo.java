@@ -13,6 +13,7 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.validation.BindException;
@@ -59,15 +61,17 @@ public class A8_ItemReaderDBDemo {
     @Bean
     public Job ItemReaderDBJobDemo() {
         return jobBuilderFactory
-                .get("A8_ItemReaderDBDemo.jobDemo.02-07")
+                .get("A8_ItemReaderDBDemo.jobDemo.02-12")
                 .start(step1())
                 .next(step2())
+                .next(step3())
+                .next(step4())
                 .build();
     }
 
     private Step step1() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step1.03")
+                .get("A8_ItemReaderDBDemo.step1.01")
                 .<UserEntity, UserEntity>chunk(2)
                 .reader(userJdbcReader())
                 .writer(dataList -> {
@@ -76,7 +80,13 @@ public class A8_ItemReaderDBDemo {
                     });
                     log.info("一个BD批次完成.....");
                 })
-                .chunk(3)
+                .build();
+    }
+
+    private Step step2() {
+        return stepBuilderFactory
+                .get("A8_ItemReaderDBDemo.step2.01")
+                .<UserEntity, UserEntity>chunk(2)
                 .reader(userFileReader())
                 .writer(dataList -> {
                     dataList.forEach(data -> {
@@ -87,9 +97,9 @@ public class A8_ItemReaderDBDemo {
                 .build();
     }
 
-    private Step step2() {
+    private Step step3() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step2.01")
+                .get("A8_ItemReaderDBDemo.step3.01")
                 .<TradeEntity, TradeEntity>chunk(2)
                 .reader(userXmlReader())
                 .writer(dataList -> {
@@ -100,6 +110,22 @@ public class A8_ItemReaderDBDemo {
                 })
                 .build();
     }
+
+
+    private Step step4() {
+        return stepBuilderFactory
+                .get("A8_ItemReaderDBDemo.step4.01")
+                .<UserEntity, UserEntity>chunk(2)
+                .reader(multiFileItemReader())
+                .writer(dataList -> {
+                    dataList.forEach(data -> {
+                        log.info("输出多File文件处理数据{}", data);
+                    });
+                    log.info("一个多文件File批次完成.....");
+                })
+                .build();
+    }
+
 
     /**
      * 读取数据库的数据
@@ -204,6 +230,23 @@ public class A8_ItemReaderDBDemo {
         unmarshaller.setAliases(map);
         eventItemReader.setUnmarshaller(unmarshaller);
         return eventItemReader;
+    }
+
+
+    /**
+     * 从多个文件中读取数据
+     *
+     * @return
+     */
+    @Bean
+    @StepScope
+    public MultiResourceItemReader<UserEntity> multiFileItemReader() {
+        MultiResourceItemReader<UserEntity> multiResourceItemReader = new MultiResourceItemReader<>();
+        //资源路径
+        multiResourceItemReader.setResources(new Resource[]{new ClassPathResource("customer_multi_1.txt"), new ClassPathResource("customer_multi_2.txt"), new ClassPathResource("customer_multi_3.txt")});
+        //设置解析代理(该代理中的资源路径会被自动设置)
+        multiResourceItemReader.setDelegate(userFileReader());
+        return multiResourceItemReader;
     }
 
 }
