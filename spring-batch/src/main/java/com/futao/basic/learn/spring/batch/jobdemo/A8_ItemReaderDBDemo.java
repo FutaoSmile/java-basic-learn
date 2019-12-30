@@ -11,10 +11,17 @@ import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.mapping.FieldSetMapper;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.validation.BindException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -22,7 +29,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 /**
- * 从数据库中读取数据
+ * 从数据库中读取数据并处理
  *
  * @author futao
  * @date 2019/12/29.
@@ -49,33 +56,57 @@ public class A8_ItemReaderDBDemo {
     @Bean
     public Job ItemReaderDBJobDemo() {
         return jobBuilderFactory
-                .get("A8_ItemReaderDBDemo.jobDemo.01-01")
+                .get("A8_ItemReaderDBDemo.jobDemo.02-06")
                 .start(step1())
+                .next(step2())
                 .build();
     }
 
     private Step step1() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step1.01")
+                .get("A8_ItemReaderDBDemo.step2.03")
                 .<UserEntity, UserEntity>chunk(2)
                 .reader(userJdbcReader())
                 .writer(dataList -> {
                     dataList.forEach(data -> {
-                        log.info("输出处理数据,{}", data);
+                        log.info("输出DB处理数据,{}", data);
                     });
-                    log.info("一个批次完成.....");
+                    log.info("一个BD批次完成.....");
+                })
+                .chunk(3)
+                .reader(userFileReader())
+                .writer(dataList -> {
+                    dataList.forEach(data -> {
+                        log.info("输出File处理数据,{}", data);
+                    });
+                    log.info("一个File批次完成.....");
+                })
+                .build();
+    }
+
+    private Step step2() {
+        return stepBuilderFactory
+                .get("A8_ItemReaderDBDemo.step2.04")
+                .chunk(3)
+                .reader(userFileReader())
+                .writer(dataList -> {
+                    dataList.forEach(data -> {
+                        log.info("输出File处理数据,{}", data);
+                    });
+                    log.info("一个File批次完成.....");
                 })
                 .build();
     }
 
     /**
+     * 读取数据库的数据
      * 必须设置成Bean，StepScope，否则会报错Name....template为null
      *
      * @return
      */
     @Bean
     @StepScope
-    public ItemReader<? extends UserEntity> userJdbcReader() {
+    public ItemReader<UserEntity> userJdbcReader() {
         JdbcPagingItemReader<UserEntity> jdbcPagingItemReader = new JdbcPagingItemReader<>();
         jdbcPagingItemReader.setDataSource(dataSource);
         //一次取两条
@@ -109,4 +140,45 @@ public class A8_ItemReaderDBDemo {
         jdbcPagingItemReader.setQueryProvider(queryProvider);
         return jdbcPagingItemReader;
     }
+
+    /**
+     * 读取文件的数据
+     *
+     * @return
+     */
+    @Bean
+    @StepScope
+    public FlatFileItemReader<UserEntity> userFileReader() {
+        FlatFileItemReader<UserEntity> fileItemReader = new FlatFileItemReader<>();
+        //设置资源路径
+        fileItemReader.setResource(new ClassPathResource("customer.txt"));
+        //跳过第一行
+        fileItemReader.setLinesToSkip(1);
+
+        //解析数据
+        DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
+        //设置分隔符
+        delimitedLineTokenizer.setDelimiter(DelimitedLineTokenizer.DELIMITER_COMMA);
+        delimitedLineTokenizer.setNames("id", "userName", "password", "age");
+
+        //把解析出的一行映射成一个对象
+        DefaultLineMapper<UserEntity> mapper = new DefaultLineMapper<>();
+        mapper.setLineTokenizer(delimitedLineTokenizer);
+        //字段映射
+        mapper.setFieldSetMapper(new FieldSetMapper<UserEntity>() {
+            @Override
+            public UserEntity mapFieldSet(FieldSet fieldSet) throws BindException {
+                return new UserEntity(
+                        fieldSet.readString("id"),
+                        fieldSet.readString("userName"),
+                        fieldSet.readString("password"),
+                        fieldSet.readInt("age")
+                );
+            }
+        });
+        mapper.afterPropertiesSet();
+        fileItemReader.setLineMapper(mapper);
+        return fileItemReader;
+    }
+
 }
