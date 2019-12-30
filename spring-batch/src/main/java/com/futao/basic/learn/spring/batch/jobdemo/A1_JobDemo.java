@@ -1,4 +1,4 @@
-package com.futao.basic.learn.spring.batch.job;
+package com.futao.basic.learn.spring.batch.jobdemo;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;

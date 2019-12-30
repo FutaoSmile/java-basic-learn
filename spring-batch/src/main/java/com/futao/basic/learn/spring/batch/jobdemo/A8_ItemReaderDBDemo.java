@@ -1,5 +1,6 @@
 package com.futao.basic.learn.spring.batch.jobdemo;
 
+import com.futao.basic.learn.spring.batch.entity.TradeEntity;
 import com.futao.basic.learn.spring.batch.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -16,11 +17,13 @@ import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.FieldSet;
+import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.oxm.xstream.XStreamMarshaller;
 import org.springframework.validation.BindException;
 
 import javax.sql.DataSource;
@@ -29,7 +32,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 
 /**
- * 从数据库中读取数据并处理
+ * 从<1.数据库中><2.File文件只中><3.XML文件>读取数据并处理
  *
  * @author futao
  * @date 2019/12/29.
@@ -56,7 +59,7 @@ public class A8_ItemReaderDBDemo {
     @Bean
     public Job ItemReaderDBJobDemo() {
         return jobBuilderFactory
-                .get("A8_ItemReaderDBDemo.jobDemo.02-06")
+                .get("A8_ItemReaderDBDemo.jobDemo.02-07")
                 .start(step1())
                 .next(step2())
                 .build();
@@ -64,7 +67,7 @@ public class A8_ItemReaderDBDemo {
 
     private Step step1() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step2.03")
+                .get("A8_ItemReaderDBDemo.step1.03")
                 .<UserEntity, UserEntity>chunk(2)
                 .reader(userJdbcReader())
                 .writer(dataList -> {
@@ -86,12 +89,12 @@ public class A8_ItemReaderDBDemo {
 
     private Step step2() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step2.04")
-                .chunk(3)
-                .reader(userFileReader())
+                .get("A8_ItemReaderDBDemo.step2.01")
+                .<TradeEntity, TradeEntity>chunk(2)
+                .reader(userXmlReader())
                 .writer(dataList -> {
                     dataList.forEach(data -> {
-                        log.info("输出File处理数据,{}", data);
+                        log.info("输出XML处理数据{}", data);
                     });
                     log.info("一个File批次完成.....");
                 })
@@ -179,6 +182,28 @@ public class A8_ItemReaderDBDemo {
         mapper.afterPropertiesSet();
         fileItemReader.setLineMapper(mapper);
         return fileItemReader;
+    }
+
+
+    /**
+     * 从XML中读取文件
+     *
+     * @return
+     */
+    public StaxEventItemReader<TradeEntity> userXmlReader() {
+        StaxEventItemReader<TradeEntity> eventItemReader = new StaxEventItemReader<>();
+        //要读取的资源路径--代表了需要读取的文件
+        eventItemReader.setResource(new ClassPathResource("trade.xml"));
+        //资源片段元素名称---片段根元素的名称就是要映射的对象。上面的示例代表的是 trade 的值
+        eventItemReader.setFragmentRootElementName("trade");
+
+        //Spring OXM提供的Unmarshalling 用于将 XML片段映射为对象
+        XStreamMarshaller unmarshaller = new XStreamMarshaller();
+        HashMap<String, Class<?>> map = new HashMap<>(1);
+        map.put("trade", TradeEntity.class);
+        unmarshaller.setAliases(map);
+        eventItemReader.setUnmarshaller(unmarshaller);
+        return eventItemReader;
     }
 
 }
