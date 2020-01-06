@@ -6,10 +6,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     platform: mysql
+    druid:
+      max-active: 10
   batch:
     initialize-schema: always
     job:
-      names: A8_ItemReaderDBDemo.jobDemo.02-16   # Comma-separated list of job names to execute on startup (for instance,`job1,job2`). By default, all Jobs found in the context are executed.
+      names: A8_ItemReaderDBDemo.jobDemo.02-39   # Comma-separated list of job names to execute on startup (for instance,`job1,job2`). By default, all Jobs found in the context are executed.
 logging:
   level:
     com:

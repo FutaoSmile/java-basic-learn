@@ -7,19 +7,20 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.batch.item.xml.StaxEventItemReader;
+import org.springframework.batch.item.xml.StaxEventItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -69,20 +70,30 @@ public class A8_ItemReaderWriteDemo {
     @Autowired
     private ItemWriter<UserEntity> jdbcItemWriter;
 
+    @Qualifier("fileItemWriter")
+    @Autowired
+    private FlatFileItemWriter<UserEntity> fileItemWriter;
+
+
+    @Qualifier("xmlItemWriter")
+    @Autowired
+    private StaxEventItemWriter<TradeEntity> xmlItemWriter;
+
     @Bean
     public Job ItemReaderDBJobDemo() {
         return jobBuilderFactory
-                .get("A8_ItemReaderDBDemo.jobDemo.02-16")
-                .start(step1())
-                .next(step2())
-                .next(step3())
-                .next(step4())
+                .get("A8_ItemReaderDBDemo.jobDemo.02-39")
+                // .start(jdbcStep())
+                // .next(fileStep())
+                // .next(xmlStep())
+                .start(multiFileStep())
                 .build();
     }
 
-    private Step step1() {
+    @Bean
+    public Step jdbcStep() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step1.01")
+                .get("A8_ItemReaderDBDemo.jdbcStep.01")
                 .<UserEntity, UserEntity>chunk(2)
                 .reader(userJdbcReader())
                 .writer(dataList -> {
@@ -95,9 +106,10 @@ public class A8_ItemReaderWriteDemo {
                 .build();
     }
 
-    private Step step2() {
+    @Bean
+    public Step fileStep() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step2.01")
+                .get("A8_ItemReaderDBDemo.fileStep.01")
                 .<UserEntity, UserEntity>chunk(2)
                 .reader(userFileReader())
                 .writer(dataList -> {
@@ -109,24 +121,27 @@ public class A8_ItemReaderWriteDemo {
                 .build();
     }
 
-    private Step step3() {
+    @Bean
+    public Step xmlStep() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step3.01")
+                .get("A8_ItemReaderDBDemo.xmlStep.01")
                 .<TradeEntity, TradeEntity>chunk(2)
                 .reader(userXmlReader())
-                .writer(dataList -> {
-                    dataList.forEach(data -> {
-                        log.info("输出XML处理数据{}", data);
-                    });
-                    log.info("一个File批次完成.....");
-                })
+//                .writer(dataList -> {
+//                    dataList.forEach(data -> {
+//                        log.info("输出XML处理数据{}", data);
+//                    });
+//                    log.info("一个XML批次完成.....");
+//                })
+                .writer(xmlItemWriter)
                 .build();
     }
 
 
-    private Step step4() {
+    @Bean
+    public Step multiFileStep() {
         return stepBuilderFactory
-                .get("A8_ItemReaderDBDemo.step4.01")
+                .get("A8_ItemReaderDBDemo.multiFileStep.01")
                 .<UserEntity, UserEntity>chunk(2)
                 .reader(multiFileItemReader())
                 .writer(dataList -> {
@@ -135,7 +150,8 @@ public class A8_ItemReaderWriteDemo {
                     });
                     log.info("一个多文件File批次完成.....");
                 })
-                .writer(jdbcItemWriter)
+//                .writer(jdbcItemWriter)
+//                .writer(fileItemWriter)
                 .build();
     }
 
@@ -147,7 +163,6 @@ public class A8_ItemReaderWriteDemo {
      * @return
      */
     @Bean
-    @StepScope
     public ItemReader<UserEntity> userJdbcReader() {
         JdbcPagingItemReader<UserEntity> jdbcPagingItemReader = new JdbcPagingItemReader<>();
         jdbcPagingItemReader.setDataSource(dataSource);
@@ -189,7 +204,6 @@ public class A8_ItemReaderWriteDemo {
      * @return
      */
     @Bean
-    @StepScope
     public FlatFileItemReader<UserEntity> userFileReader() {
         FlatFileItemReader<UserEntity> fileItemReader = new FlatFileItemReader<>();
         //设置资源路径
@@ -229,6 +243,7 @@ public class A8_ItemReaderWriteDemo {
      *
      * @return
      */
+    @Bean
     public StaxEventItemReader<TradeEntity> userXmlReader() {
         StaxEventItemReader<TradeEntity> eventItemReader = new StaxEventItemReader<>();
         //要读取的资源路径--代表了需要读取的文件
@@ -252,7 +267,6 @@ public class A8_ItemReaderWriteDemo {
      * @return
      */
     @Bean
-    @StepScope
     public MultiResourceItemReader<UserEntity> multiFileItemReader() {
         MultiResourceItemReader<UserEntity> multiResourceItemReader = new MultiResourceItemReader<>();
         //资源路径
