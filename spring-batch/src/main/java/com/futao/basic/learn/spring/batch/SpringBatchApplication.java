@@ -3,16 +3,14 @@ package com.futao.basic.learn.spring.batch;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.futao.basic.learn.spring.batch.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.reflections.Reflections;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Configuration;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.ServiceLoader;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author futao Created on 2019/11/15.
@@ -48,6 +46,13 @@ public class SpringBatchApplication implements Closeable {
         runtime.addShutdownHook(thread);
         runtime.exec("pwd");
         SpringApplication.run(SpringBatchApplication.class);
+        new Thread(() -> {
+            try {
+                TimeUnit.DAYS.sleep(2L);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     @Override

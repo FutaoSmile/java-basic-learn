@@ -11,7 +11,8 @@ spring:
   batch:
     initialize-schema: always
     job:
-      names: FailDemo.failJobDemo.001   # Comma-separated list of job names to execute on startup (for instance,`job1,job2`). By default, all Jobs found in the context are executed.
+      names: FailRetryDemo.failJobDemo.002   # Comma-separated list of job names to execute on startup (for instance,`job1,job2`). By default, all Jobs found in the context are executed.
+      enabled: off  # 不需要任务自动执行
 logging:
   level:
     com:

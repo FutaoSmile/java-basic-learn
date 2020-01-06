@@ -30,7 +30,7 @@ public class FailDemo {
     @Bean
     public Job failJobDemo() {
         return jobBuilderFactory
-                .get("FailDemo.failJobDemo.001")
+                .get("FailDemo.failJobDemo.002")
                 .start(step1())
                 .next(step2())
                 .build();
