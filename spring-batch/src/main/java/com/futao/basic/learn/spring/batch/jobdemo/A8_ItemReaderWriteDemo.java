@@ -20,7 +20,6 @@ import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.batch.item.xml.StaxEventItemReader;
-import org.springframework.batch.item.xml.StaxEventItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -75,9 +74,9 @@ public class A8_ItemReaderWriteDemo {
     private FlatFileItemWriter<UserEntity> fileItemWriter;
 
 
-    @Qualifier("xmlItemWriter")
-    @Autowired
-    private StaxEventItemWriter<TradeEntity> xmlItemWriter;
+//    @Qualifier("xmlItemWriter")
+//    @Autowired
+//    private StaxEventItemWriter<TradeEntity> xmlItemWriter;
 
     @Bean
     public Job ItemReaderDBJobDemo() {
@@ -127,13 +126,13 @@ public class A8_ItemReaderWriteDemo {
                 .get("A8_ItemReaderDBDemo.xmlStep.01")
                 .<TradeEntity, TradeEntity>chunk(2)
                 .reader(userXmlReader())
-//                .writer(dataList -> {
-//                    dataList.forEach(data -> {
-//                        log.info("输出XML处理数据{}", data);
-//                    });
-//                    log.info("一个XML批次完成.....");
-//                })
-                .writer(xmlItemWriter)
+                .writer(dataList -> {
+                    dataList.forEach(data -> {
+                        log.info("输出XML处理数据{}", data);
+                    });
+                    log.info("一个XML批次完成.....");
+                })
+//                .writer(xmlItemWriter)
                 .build();
     }
 

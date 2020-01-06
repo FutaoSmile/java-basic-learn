@@ -86,7 +86,7 @@ public class B1_ItemWriteDemo {
     @Bean
     public FlatFileItemWriter<UserEntity> fileItemWriter() throws Exception {
         FlatFileItemWriter<UserEntity> fileItemWriter = new FlatFileItemWriter<>();
-        fileItemWriter.setResource(new ClassPathResource("fileOutPut.txt"));
+        fileItemWriter.setResource(new ClassPathResource("processorFileOutPut2.txt"));
 
         //Obj.toString()
 //        PassThroughLineAggregator<UserEntity> lineAggregator = new PassThroughLineAggregator<>();
@@ -123,6 +123,7 @@ public class B1_ItemWriteDemo {
         return fileItemWriter;
     }
 
+//    @Bean
     public StaxEventItemWriter<TradeEntity> xmlItemWriter() {
         StaxEventItemWriter<TradeEntity> userEntityStaxEventItemWriter = new StaxEventItemWriter<>();
         userEntityStaxEventItemWriter.setResource(new ClassPathResource("xmlOutput.xml"));
