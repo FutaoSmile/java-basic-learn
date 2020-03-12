@@ -15,6 +15,7 @@
         <module>i18n</module>
         <module>spring-batch</module>
         <module>lambda-expression</module>
+        <module>2020</module>
     </modules>
 
 
