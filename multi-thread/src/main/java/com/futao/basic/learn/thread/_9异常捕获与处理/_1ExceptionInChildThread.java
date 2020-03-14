@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * （synchronized关键字锁住的代码如果发生了异常，锁会被自动释放）
+ * <p>
  * UncaughtException能检测出线程由于未捕获异常而终止的情况
  *
  * @author futao
