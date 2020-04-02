@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2020/1/6.
  */
 public class A1_Map {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         //同步方法
         //线程安全，但是实现线程安全的方式非常的简单粗暴，是在方法上加上synchronized关键字，锁住的是当前对象(即都在竞争同一把锁)，所以一个方法在执行时，其他对该对象的操作将全部阻塞。
