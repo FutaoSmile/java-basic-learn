@@ -17,5 +17,7 @@ public class Guava {
         eventBus.register(new CL());
 
         eventBus.post(new EventMessage("mmm", "我是Data啊"));
+
+
     }
 }
