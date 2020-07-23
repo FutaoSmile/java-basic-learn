@@ -13,10 +13,10 @@
     <description>反射-尚学堂</description>
 
     <dependencies>
-        <dependency>
-            <groupId>com.lazy.starter</groupId>
-            <artifactId>lazy-tools</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.lazy.starter</groupId>-->
+<!--            <artifactId>lazy-tools</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>

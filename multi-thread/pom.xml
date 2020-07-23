@@ -20,10 +20,10 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.lazy.starter</groupId>
-            <artifactId>lazy-tools</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.lazy.starter</groupId>-->
+<!--            <artifactId>lazy-tools</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
 </project>
