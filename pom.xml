@@ -24,6 +24,7 @@
         <module>guava-learn</module>
         <module>javassist</module>
         <module>mybatis</module>
+        <module>atguigu-encryption</module>
     </modules>
 
 
