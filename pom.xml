@@ -25,6 +25,7 @@
         <module>javassist</module>
         <module>mybatis</module>
         <module>atguigu-encryption</module>
+        <module>zookeeper</module>
     </modules>
 
 
