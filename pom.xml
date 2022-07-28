@@ -26,6 +26,8 @@
         <module>mybatis</module>
         <module>atguigu-encryption</module>
         <module>zookeeper</module>
+        <module>SPI</module>
+        <module>SPI-consumer</module>
     </modules>
 
 

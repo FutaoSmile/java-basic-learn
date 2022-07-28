@@ -1,22 +1,13 @@
 package com.futao.basic.learn;
 
+import java.util.ArrayList;
+
 /**
  * @author futao
  * @date 2020/3/31.
  */
 public class ST {
-
-
-    private ST() {
-
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<>();
     }
-
-    public static ST getInstance() {
-        return HolderClass.INSTANCE;
-    }
-
-    private static class HolderClass {
-        private static final ST INSTANCE = new ST();
-    }
-
 }
